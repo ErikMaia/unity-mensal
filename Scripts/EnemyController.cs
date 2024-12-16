@@ -1,0 +1,54 @@
+using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.SceneManagement;
+
+public class EnemyController : MonoBehaviour
+{
+    public Transform player;
+    public NavMeshAgent agent;
+    public int current_path;
+    public float min_distance;
+    public Transform[] possition;
+    
+
+    private void generateTargetIfNotExist(){
+        if(possition.Length > 0){
+            return;
+        }
+        // compara a distancia
+        var distancia = Vector3.Distance(agent.destination, transform.position);
+        if(distancia<10){
+            agent.destination = Vector3.forward * Random.Range(-1000,1000) + Vector3.left * Random.Range(-1000,1000) + transform.position;
+        }
+    }
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        agent = GetComponent<NavMeshAgent>();
+        generateTargetIfNotExist();
+        if(possition.Length!=0)
+            agent.destination = possition[current_path].position;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        var distanceToPlayer = Vector3.Distance(agent.destination, player.transform.position);
+        if(distanceToPlayer<6){
+            agent.destination = player.transform.position;
+            return;
+        }
+        var distanceToPoint = Vector3.Distance(agent.destination, transform.position);
+        if(distanceToPoint<min_distance){
+            current_path = (current_path + 1)%possition.Length;
+            agent.destination = possition[current_path].position;
+        }
+        
+    }
+    private void OnTriggerEnter(Collider other) {
+       if(other.CompareTag("Player")){
+            SceneManager.LoadScene("Morte_Menu");
+        }
+
+    }
+}
