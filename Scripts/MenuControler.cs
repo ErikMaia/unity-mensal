@@ -1,12 +1,14 @@
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuControler : MonoBehaviour
 {
-    public string level;
+    public int level;
     public PlayerScriptableObject player;
     public void startGame()
     {
+        
         SceneManager.LoadScene(level);
     }
 
@@ -19,6 +21,7 @@ public class MenuControler : MonoBehaviour
     {
         player.dias = 0;
         player.value = 0;
+        // SceneManager.LoadScene(level);
     }
 
     // Update is called once per frame
